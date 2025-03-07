@@ -1,0 +1,22 @@
+{
+  "name": "packing-slips-demo",
+  "version": "1.0.0",
+  "description": "Backend for my-app using Node.js and Express, connecting to the Intuit API.",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "axios": "^0.21.1",
+    "dotenv": "^8.2.0",
+    "qs": "^6.10.1",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "author": "",
+  "license": "ISC"
+}
