@@ -23,6 +23,22 @@ class IntuitController {
         }
     }
 
+    async fetchInvoices(req, res) { // Add this method
+        try {
+            console.log('Fetching invoices from Intuit API');
+            const companyId = '9341454230989547'; // Replace with your actual company ID
+            const query = 'select * from Invoice'; // Example query to fetch invoices
+            const minorVersion = 75; // Example minor version, adjust as needed
+            console.log(`Query: ${query}, Company ID: ${companyId}, Minor Version: ${minorVersion}`);
+            const data = await this.intuitService.getData(`/v3/company/${companyId}/query?query=${encodeURIComponent(query)}&minorversion=${minorVersion}`);
+            console.log('Invoices fetched successfully:', data);
+            res.status(200).json(data);
+        } catch (error) {
+            console.error('Error fetching invoices:', error);
+            res.status(500).json({ message: 'Error fetching invoices', error: error.message });
+        }
+    }
+
     async authorize(req, res) {
         try {
             if (this.intuitService.token) {

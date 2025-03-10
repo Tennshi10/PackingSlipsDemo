@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, useHistory, Link } from 'react-router-dom'; // Add Link
 import IntuitData from './components/IntuitData';
+import Invoices from './components/Invoices'; // Import Invoices component
 import axios from 'axios';
 
 function App() {
@@ -44,9 +45,15 @@ function App() {
     <Router>
       <div>
         <h1>Intuit Data Fetcher</h1>
+        <nav>
+          <Link to="/">Home</Link> | <Link to="/invoices">Invoices</Link> {/* Add link to invoices */}
+        </nav>
         <Switch>
           <Route path="/" exact>
             {isAuthorized ? <IntuitData /> : <div>Authorizing...</div>}
+          </Route>
+          <Route path="/invoices" exact>
+            <Invoices /> {/* Add route for invoices */}
           </Route>
         </Switch>
       </div>
