@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchInvoices } from '../services/apiService';
+import InvoiceCard from './InvoiceCard'; // Import InvoiceCard component
+import './Invoices.css'; // Import CSS for styling
 
 const Invoices = () => {
     const [data, setData] = useState(null);
@@ -30,9 +32,10 @@ const Invoices = () => {
     }
 
     return (
-        <div>
-            <h1>Invoices</h1>
-            <pre>{JSON.stringify(data, null, 2)}</pre>
+        <div className="invoices-container">
+            {data.map(invoice => (
+                <InvoiceCard key={invoice.Id} invoice={invoice} />
+            ))}
         </div>
     );
 };

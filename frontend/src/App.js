@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch, useHistory, Link } from 'react-
 import IntuitData from './components/IntuitData';
 import Invoices from './components/Invoices'; // Import Invoices component
 import axios from 'axios';
+import './App.css'; // Import global CSS
 
 function App() {
   const history = useHistory();

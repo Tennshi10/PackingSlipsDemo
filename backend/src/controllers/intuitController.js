@@ -23,19 +23,32 @@ class IntuitController {
         }
     }
 
-    async fetchInvoices(req, res) { // Add this method
+    async fetchInvoices(req, res) {
         try {
             console.log('Fetching invoices from Intuit API');
             const companyId = '9341454230989547'; // Replace with your actual company ID
-            const query = 'select * from Invoice'; // Example query to fetch invoices
+            const query = "SELECT * FROM Invoice where TxnDate > '2025-02-20'"; // Fetch all invoices
             const minorVersion = 75; // Example minor version, adjust as needed
             console.log(`Query: ${query}, Company ID: ${companyId}, Minor Version: ${minorVersion}`);
             const data = await this.intuitService.getData(`/v3/company/${companyId}/query?query=${encodeURIComponent(query)}&minorversion=${minorVersion}`);
             console.log('Invoices fetched successfully:', data);
-            res.status(200).json(data);
+    
+            // Log the raw data to see what is being fetched
+            console.log('Raw invoice data:', JSON.stringify(data, null, 2));
+    
+            // Filter invoices based on custom fields
+            const filteredInvoices = data.QueryResponse.Invoice.filter(invoice => {
+                return invoice.CustomField && invoice.CustomField.some(field => 
+                    field.Name === 'PackingSlip' && 
+                    ['PENDING', 'WORKING', 'FINISHED', 'SHIPPED'].includes(field.StringValue)
+                );
+            });
+    
+            console.log('Filtered invoices:', filteredInvoices);
+            res.status(200).json(filteredInvoices);
         } catch (error) {
-            console.error('Error fetching invoices:', error);
-            res.status(500).json({ message: 'Error fetching invoices', error: error.message });
+            console.error('Error fetching invoices:', error.response ? error.response.data : error.message); // Enhanced error logging
+            res.status(500).json({ message: 'Error fetching invoices', error: error.response ? error.response.data : error.message });
         }
     }
 
