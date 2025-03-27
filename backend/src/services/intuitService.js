@@ -6,7 +6,7 @@ class IntuitService {
     constructor(apiClient) {
         this.apiClient = apiClient;
         this.token = null;
-        this.baseUrl = 'https://sandbox-quickbooks.api.intuit.com'; // Use the correct base URL
+        this.baseUrl = 'https://sandbox-quickbooks.api.intuit.com'; // API URL
     }
 
     generateState() {
@@ -30,7 +30,7 @@ class IntuitService {
         });
 
         try {
-            console.log('Requesting token from Intuit API'); // Add this line
+            console.log('Requesting token from Intuit API'); 
             const response = await axios.post(tokenUrl, data, {
                 headers: {
                     'Authorization': `Basic ${auth}`,
@@ -38,7 +38,7 @@ class IntuitService {
                 }
             });
             this.token = response.data.access_token;
-            console.log('Token obtained successfully:', this.token); // Add this line
+            console.log('Token obtained successfully:', this.token);
         } catch (error) {
             console.error('Error obtaining token from Intuit API:', error.response ? error.response.data : error.message); // Add this line
             throw new Error(`Error obtaining token from Intuit API: ${error.message}`);

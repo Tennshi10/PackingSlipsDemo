@@ -1,0 +1,143 @@
+# Application Flow Overview
+
+The PackingSlipsDemo application is a full-stack project consisting of a **React.js frontend** and a **Node.js backend**. It integrates with the **Intuit API** to fetch and display data such as invoices and company information. Below is a detailed explanation of the flow:
+
+---
+
+## 1. Application Startup
+
+### Backend
+- **Entry Point**: `backend/src/app.js`
+  - The Express server is initialized.
+  - Middleware like `bodyParser` and `cors` is set up.
+  - Routes are registered via `intuitRoutes.js`.
+
+- **Routes**: `backend/src/routes/intuitRoutes.js`
+  - Defines endpoints for:
+    - `/intuit/data`: Fetches general company data.
+    - `/intuit/invoices`: Fetches filtered invoices.
+    - `/intuit/authorize`: Initiates OAuth authorization.
+    - `/intuit/callback`: Handles OAuth callback.
+
+- **Controller**: `backend/src/controllers/intuitController.js`
+  - Handles requests and interacts with the `IntuitService` to fetch or post data to the Intuit API.
+  - Key methods:
+    - `fetchData`: Fetches company data.
+    - `fetchInvoices`: Fetches and filters invoices based on custom fields.
+    - `authorize`: Generates an authorization URL for OAuth.
+    - `callback`: Exchanges the authorization code for an access token.
+
+- **Service**: `backend/src/services/intuitService.js`
+  - Handles communication with the Intuit API.
+  - Manages OAuth token generation and API requests.
+
+### Frontend
+- **Entry Point**: `frontend/src/index.js`
+  - Renders the root React component (`App.js`) into the DOM.
+
+- **Main Component**: `frontend/src/App.js`
+  - Sets up routing using `react-router-dom`.
+  - Handles OAuth authorization by:
+    - Redirecting to the Intuit authorization URL if not authorized.
+    - Handling the OAuth callback to fetch the access token.
+  - Defines routes:
+    - `/`: Displays company data via the `IntuitData` component.
+    - `/invoices`: Displays filtered invoices via the `Invoices` component.
+
+---
+
+## 2. Data Flow
+
+### Authorization
+1. **Frontend**:
+   - On app load, `App.js` checks if the user is authorized.
+   - If not, it calls the `/api/intuit/authorize` endpoint.
+   - The backend generates an authorization URL and redirects the user to Intuit's OAuth page.
+2. **Backend**:
+   - The `/intuit/authorize` endpoint generates the URL using `IntuitService.getAuthorizationCode`.
+   - The `/intuit/callback` endpoint exchanges the authorization code for an access token.
+
+### Fetching Data
+1. **Company Data**:
+   - The `IntuitData` component calls `fetchIntuitData` from `apiService.js`.
+   - The backend's `/intuit/data` endpoint fetches company data from the Intuit API using `IntuitService.getData`.
+   - The data is returned to the frontend and displayed in a `<pre>` block.
+
+2. **Invoices**:
+   - The `Invoices` component calls `fetchInvoices` from `apiService.js`.
+   - The backend's `/intuit/invoices` endpoint fetches invoices from the Intuit API using `IntuitService.getData`.
+   - The invoices are filtered based on the `PackingSlip` custom field.
+   - The filtered invoices are returned to the frontend and displayed using the `InvoiceCard` component.
+
+---
+
+## 3. Component Interactions
+
+### `App.js`
+- Manages routing and authorization.
+- Renders `IntuitData` or `Invoices` based on the route.
+
+### `IntuitData.js`
+- Fetches and displays company data.
+- Uses `fetchIntuitData` from `apiService.js`.
+
+### `Invoices.js`
+- Fetches and displays filtered invoices.
+- Uses `fetchInvoices` from `apiService.js`.
+- Renders a list of `InvoiceCard` components.
+
+### `InvoiceCard.js`
+- Displays individual invoice details.
+- Applies conditional styling based on the `PackingSlip` status.
+
+---
+
+## 4. Backend-Frontend Interaction
+
+### API Endpoints
+- **GET /api/intuit/data**:
+  - Called by `fetchIntuitData` in `apiService.js`.
+  - Returns company data.
+- **GET /api/intuit/invoices**:
+  - Called by `fetchInvoices` in `apiService.js`.
+  - Returns filtered invoices.
+- **GET /api/intuit/authorize**:
+  - Called during app initialization if the user is not authorized.
+  - Returns the Intuit authorization URL.
+- **GET /api/intuit/callback**:
+  - Called by Intuit after user authorization.
+  - Exchanges the authorization code for an access token.
+
+---
+
+## 5. Key Data Flow
+
+1. **Authorization**:
+   - Frontend → `/api/intuit/authorize` → Intuit OAuth → `/api/intuit/callback` → Backend stores token.
+
+2. **Fetching Data**:
+   - Frontend → `/api/intuit/data` → Backend → Intuit API → Backend → Frontend.
+   - Frontend → `/api/intuit/invoices` → Backend → Intuit API → Backend → Frontend.
+
+3. **Rendering**:
+   - `IntuitData` renders company data.
+   - `Invoices` renders filtered invoices using `InvoiceCard`.
+
+---
+
+## 6. Styling
+
+- Global styles are defined in `App.css`.
+- Component-specific styles:
+  - `Invoices.css`: Styles the invoices container.
+  - `InvoiceCard.css`: Styles individual invoice cards with conditional colors based on status.
+
+---
+
+## 7. Summary
+
+- The app starts by checking authorization.
+- If authorized, it fetches and displays data from the Intuit API.
+- The frontend and backend communicate via RESTful API endpoints.
+- Data is displayed in a user-friendly format with conditional styling.
+

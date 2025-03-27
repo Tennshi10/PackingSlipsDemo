@@ -9,6 +9,7 @@ const Invoices = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        // Fetch invoices from the backend
         const getData = async () => {
             try {
                 const result = await fetchInvoices();
@@ -33,6 +34,7 @@ const Invoices = () => {
 
     return (
         <div className="invoices-container">
+            {/* Render each invoice as a card */}
             {data.map(invoice => (
                 <InvoiceCard key={invoice.Id} invoice={invoice} />
             ))}
